@@ -1,0 +1,17 @@
+---
+description: PoE Forge calculation and data validation
+alwaysApply: true
+---
+
+# Validation
+
+Character numbers come from the running Path of Building calculation (`CalcsTab:BuildOutput` and `mainOutput`).
+
+- Do not read `<PlayerStat>` from build XML and present it as a current result. Those tags are a cache written at save time.
+- Do not hard-code Life, DPS, resistances, or prices as if they had been calculated.
+- Do not mark a mechanic, node, item, or interaction as supported unless the pinned PoB data or an authoritative source says so.
+- Record the PoB git revision and the tree version beside any calculation you persist.
+- If the engine cannot run, say what failed. Do not substitute a fixture number.
+- A comparison is valid only when both sides were just calculated by the engine.
+- Custom modifiers must stay visible and separate from game modifiers.
+- Do not claim a build is safe for voided content, and do not enable every buff by default.

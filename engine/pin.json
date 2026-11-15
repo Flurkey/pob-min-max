@@ -1,0 +1,30 @@
+{
+  "repository": "https://github.com/PathOfBuildingCommunity/PathOfBuilding",
+  "branch": "dev",
+  "commit": "e5917f81fd64c10d9bc816c410da395ed18e57ba",
+  "commitTime": "2026-11-15T16:41:48-06:00",
+  "subject": "Support Polaric Devastation (#10415)",
+  "manifestVersion": "2.67.2",
+  "latestTreeVersion": "3_30",
+  "latestTreeDisplay": "3.30",
+  "luajit": {
+    "repository": "https://github.com/LuaJIT/LuaJIT",
+    "commit": "63c8f1a9b479ba5518cf6a170ff7729178bc3cfd",
+    "version": "LuaJIT 2.1.1794386141"
+  },
+  "luaUtf8": {
+    "repository": "https://github.com/starwing/luautf8",
+    "commit": "a845c5b7f89995b7e1f10e34608fd2fa37ea9d87",
+    "module": "lua-utf8"
+  },
+  "measuredOn": "2026-11-15",
+  "measured": {
+    "baselineClass": "Scion",
+    "baselineLevel": 1,
+    "baselineLife": 60,
+    "lifeAfterFlat100": 160,
+    "lifeNodeId": 15073,
+    "lifeNodeName": "Life",
+    "lifeAfterNode": 256
+  }
+}
