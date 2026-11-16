@@ -11,6 +11,9 @@ services/knowledge  --->  LuaJIT data reader  --->  Path of Building src/Data an
 
 services/agent  --->  engine service and knowledge store
                   model provider interface (no network in this package)
+
+services/optimisation  --->  agent tools
+                       copies, scores, and caches engine calculations
 ```
 
 ## Web
@@ -68,6 +71,18 @@ The web app does not query this database yet. The agent tools do.
 - `equip_item` and `allocate_passives` copy the caller's revision, then edit the copy. A disconnected passive set or a point total above the tree file's budget is rejected before that copy is kept. The imported row is not updated.
 - The provider interface can describe an OpenAI, OpenAI-compatible, Anthropic, Gemini, or Ollama request. `complete` sends only through a transport the caller supplies. With no transport it refuses. The tests use a fake provider, so a tool result cannot be a number the model wrote down.
 
+## Optimisation
+
+`services/optimisation` does not calculate stats and does not call a model. It asks the agent tools to copy, equip, allocate, and calculate.
+
+- The stored import is copied first. Mutating tools then copy again, so the saved revision is not the edited parent.
+- Passive candidates are checked on the imported graph before a copy is kept. A disconnected set, a set over the tree file's point budget, or a set over the caller's point budget is rejected.
+- A result is ranked only when its `source` is `pob-engine`. The score reads those stats. A missing stat is not treated as zero.
+- The cache key is a canonical hash of the build (items, skills, tree, and build attributes, without `<PlayerStat>`), the engine revision, and the active configuration profile. A second identical trial reuses the cached engine result.
+- `max_iterations` stops the search. A cancel token does the same between candidates. If a hard minimum or maximum is never met, the result says the objective is impossible.
+
+The web console is still the library, inspector, history, and comparison. It is not the Optimisation Lab.
+
 ## What is intentionally absent
 
-Trade prices, patch-note ingestion, recommendation workflows, and the optimisation search are later work. The web console is the library, inspector, history, and comparison. It is not the full dashboard from the roadmap.
+Trade prices, patch-note ingestion, and recommendation workflows are later work.

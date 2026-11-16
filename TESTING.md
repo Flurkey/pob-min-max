@@ -1,6 +1,6 @@
 # Testing
 
-Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine, knowledge, and agent packages into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. The Phase 3 tests import the pinned data files. The Phase 4 tests do both, and they talk to a fake model provider. They fail if the checkout or the interpreter is missing. They do not skip.
+Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine, knowledge, agent, and optimisation packages into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. The Phase 3 tests import the pinned data files. The Phase 4 tests do both, and they talk to a fake model provider. The Phase 5 tests search the Scion fixture with the real engine. They fail if the checkout or the interpreter is missing. They do not skip.
 
 ## What the suite does
 
@@ -35,6 +35,13 @@ Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engi
 | Fake provider | The script claims the forged PlayerStat Life. `import_build`, `get_build_state`, and `calculate_build` return the engine's Life. Equip and allocate run on copies and return the engine's later Life values. Compare reports those engine numbers. |
 | Imported catalogue | Unique text, the Kinetic Blast gem, the Life node, and the path to it match the knowledge database and the checkout. The provider arguments do not contain that text. |
 | Export copy | The edited copy's XML reimports at the same engine Life. The original import XML is still the forged file. |
+| Build hash | A canonical hash ignores `<PlayerStat>` and changes when the tree changes. The configuration profile is a separate cache field. |
+| Candidate order | Passive candidates from the imported tree are nearest-first, then lowest node id. Unique candidates keep the imported raw text. |
+| Search | On the Scion fixture, the search's engine results include Life 60, the Glorious Plate at 160, and the plate plus the Life node at 256. The import XML is unchanged. |
+| Rejection | A disconnected node set, a 124-point set, and an unknown item base are rejected. A one-point search budget rejects the Life path. |
+| Cache | A second identical plate trial is served from the cache and matches the engine stats of the first trial. Calculating the unchanged import hits the same cache. |
+| Limits | `max_iterations` of 1 stops after the plate. Cancel before the first candidate, and cancel between candidates, both stop without editing the import. |
+| Impossible objective | A Life minimum of 1000000 is reported as impossible. The plate trial still shows the engine's Life. |
 
 The Life numbers and the knowledge counts are locks for this pin. Neither service contains them as a substitute for the checkout. If a future PoB commit changes the result, the test fails and the pin has to move with a new measurement.
 
@@ -45,7 +52,7 @@ Phase 3 tests build the SQLite file from the live checkout in a temporary direct
 - Desktop Path of Building on Windows, so there is no GUI-versus-headless diff.
 - Share codes, pobb.in, and pathofexile.com character import.
 - Support-gem compatibility, aura reservation, attribute-requirement failures, cluster jewels, and timeless jewels.
-- Optimiser cancel and budget enforcement for the search in Phase 5. Tool-argument rejection is covered with the agent tools.
+- A desktop check of an equipment or passive edit on one of Neil's saved builds. Tool-argument rejection is covered with the agent tools. Search cancel and the point budget are covered with the Scion fixture.
 
 `engine/adapter.lua` has no self-test switch. The pytest process is the check.
 
