@@ -17,6 +17,9 @@ services/optimisation  --->  agent tools
 
 services/discovery  --->  knowledge store
                       chains and conflicts from imported unique and modifier text
+
+services/progression  --->  engine library copies
+                         knowledge store for modifier type and group
 ```
 
 ## Web
@@ -94,6 +97,14 @@ A chain is two cited lines that share a phrase copied from the import. The first
 
 A step that names an item or a modifier the import does not contain, or quotes text that row does not contain, is rejected. Minion, ally, totem, and golem stats are not treated as the character's stat.
 
+## Progression
+
+`services/progression` calls the engine library and reads the knowledge database. It does not calculate a new stat of its own and it does not call a model.
+
+`library_copy` inserts a new build whose saved revision is the source XML. The source build's saved revision is not moved. Progression asks for one such copy per stage: campaign, early maps, and endgame. Editing a stage uses the existing equipment path, which writes a draft of that stage's build.
+
+A rare craft is checked against imported `modType` and `group`. The slot counts are the pinned item editor's: a rare that is not a jewel or a graft has six explicit mods, and the editor splits that limit into prefixes and suffixes. A group conflict is reported only when the imported rows carry the same group in the same file. Weights are not on those rows. The check refuses a weight and refuses a crafting cost.
+
 ## What is intentionally absent
 
-Trade prices, patch-note ingestion, and recommendation workflows are later work. The discovery search does not build a character or run it through the engine.
+Trade prices, crafting currency cost, patch-note ingestion, and recommendation workflows are later work. The discovery search does not build a character or run it through the engine.

@@ -1,6 +1,6 @@
 # Testing
 
-Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine, knowledge, agent, optimisation, and discovery packages into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. The Phase 3 tests import the pinned data files. The Phase 4 tests do both, and they talk to a fake model provider. The Phase 5 tests search the Scion fixture with the real engine. The Phase 6 tests search that same import for chains and conflicts. They fail if the checkout or the interpreter is missing. They do not skip.
+Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine, knowledge, agent, optimisation, discovery, and progression packages into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. The Phase 3 tests import the pinned data files. The Phase 4 tests do both, and they talk to a fake model provider. The Phase 5 tests search the Scion fixture with the real engine. The Phase 6 tests search that same import for chains and conflicts. The Phase 7 tests copy a library build into stage builds and check crafts against that import. They fail if the checkout or the interpreter is missing. They do not skip.
 
 ## What the suite does
 
@@ -45,6 +45,12 @@ Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engi
 | Chains | Every chain step is an imported unique or modifier line. The shared phrase is in both excerpts. Grant, also-apply, for-every, and per-stat links are all present. A minion-only increase is not used as the character's stat. |
 | Unknown citation | A unique name that is not in the import, a modifier id that is not in the import, an excerpt pasted onto a different unique, and a gem citation are rejected. |
 | Conflicts | A status conflict quotes a forbid line and a `while` line from the import. A modifier-group conflict uses the imported `group` field. Variant and Version headers are quoted from the unique text. An aura-disable line is paired with a different aura the import names. |
+| Stage copies | Campaign, early maps, and endgame are three saved builds. Each XML matches the import. The import's saved revision stays put. Equipping Glorious Plate on the campaign copy calculates Life 160 there, and the import still calculates Life 60. |
+| Rare mods | Three imported prefixes and three imported suffixes, from different groups, are a legal rare. The cited lines are the imported lines. |
+| Groups | Two imported Strength suffixes share a group and are rejected while still under the suffix limit. Strength and Dexterity together are accepted. A full 3 and 3 set that repeats the Strength group is rejected. |
+| Six-mod rare | Six imported prefixes are rejected. Four imported prefixes and two imported suffixes are rejected. The reasons name that split. |
+| Closed crafts | A Watcher's Eye row with no prefix or suffix type is rejected. An unknown modifier id is an error. A modifier selected twice is rejected. |
+| Weights | `Strength1` has weights in `ModExplicit.lua` and none on the imported row. Asking for the weight raises. Asking for a crafting cost raises. The verdict has no cost and no weight. |
 
 The Life numbers and the knowledge counts are locks for this pin. Neither service contains them as a substitute for the checkout. If a future PoB commit changes the result, the test fails and the pin has to move with a new measurement.
 

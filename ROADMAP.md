@@ -54,7 +54,9 @@ Not in this slice: original builds, engine validation of a discovered chain, and
 
 ## Phase 7 — Economy and progression
 
-Trade, pricing, crafting steps, and staged builds. Prices come from a source with a timestamp, not from the model.
+Status: a library build can be copied into three saved builds, one each for campaign, early maps, and endgame. The source revision is not updated. Crafting legality uses imported modifier type and group: a normal rare is 3 prefixes and 3 suffixes, a shared group in one modifier file is rejected, and a six-mod rare that is not that split is rejected. The import has no weights. A weight or a crafting cost is refused.
+
+Not in this slice: trade prices, crafting steps, and a currency cost. Prices still have to come from a source with a timestamp.
 
 ## Phase 8 — Advanced endgame
 

@@ -4,7 +4,7 @@ This file is for coding agents working in this repository.
 
 ## Current phase
 
-Phase 6 discovery, on top of the Phase 3 knowledge import. The search reads imported unique and modifier rows and cites every step. It does not call a model and it does not calculate stats. Do not start patch-note ingestion, the trade client, or a live model call. Do not change the pinned Path of Building checkout. The upfront cost round in `CalcOffence.lua` stays. Do not commit API keys.
+Phase 7 progression, on top of the Phase 6 discovery import. Stage copies are new library builds. Crafting legality reads imported modifier type and group. Do not invent a weight or a price. Do not start the trade client or a live model call. Do not change the pinned Path of Building checkout. The upfront cost round in `CalcOffence.lua` stays. Do not commit API keys.
 
 ## Hard rules
 
@@ -27,6 +27,7 @@ Phase 6 discovery, on top of the Phase 3 knowledge import. The search reads impo
 - Agent tools and the fake provider: `services/agent`. Tool results must come from the engine or the imported data.
 - Deterministic search: `services/optimisation`. It calls those tools. It does not invent a stat and it does not call a model.
 - Interaction search: `services/discovery`. Chains and conflicts quote imported unique and modifier text. A citation missing from the database is an error.
+- Stage copies and crafting legality: `services/progression`. Copies go through `library_copy`. A craft that is not in the import, or that needs a weight the import does not store, is an error.
 
 ## Verification
 

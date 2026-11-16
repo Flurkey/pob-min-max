@@ -190,6 +190,58 @@ class EngineService:
                 "build": _public_build(self.store.get_build(build_id)),
             }
 
+    def library_copy(
+        self,
+        build_id: str,
+        revision_id: str | None = None,
+        *,
+        name: str,
+        label: str,
+    ) -> dict:
+        """A new library build whose saved revision is a copy of this one.
+
+        The source build's saved revision id and XML are not updated.
+        """
+        cleaned_name = name.strip()
+        cleaned_label = label.strip()
+        if not cleaned_name or len(cleaned_name) > 200:
+            raise EngineError("A library copy needs a name.")
+        if not cleaned_label or len(cleaned_label) > 80:
+            raise EngineError("A library copy needs a label.")
+        with self._lock:
+            source_build = self.store.get_build(build_id)
+            source_id = revision_id or source_build.get("saved_revision_id")
+            if not source_id:
+                raise EngineError("This build has no stored revision to copy.")
+            source = self.store.get(source_id)
+            if source["build_id"] != build_id:
+                raise EngineError("That revision belongs to a different build.")
+            saved_before = source_build.get("saved_revision_id")
+            xml_before = source["xml"]
+            # Omit build_id so the store inserts a new build. Passing the source
+            # id would move that build's saved revision.
+            child = self.store.create(
+                name=cleaned_name,
+                xml=xml_before,
+                label=cleaned_label,
+                parent_id=source["id"],
+                engine_revision=source.get("engine_revision") or self.process.revision,
+                tree_version=source.get("tree_version"),
+                status="saved",
+            )
+            if child["build_id"] == build_id:
+                raise EngineError("A library copy must be its own build.")
+            if self.store.get(source_id)["xml"] != xml_before:
+                raise EngineError("A library copy changed the source XML.")
+            if self.store.get_build(build_id)["saved_revision_id"] != saved_before:
+                raise EngineError("A library copy moved the stored revision.")
+            return {
+                "revision": _public_revision(self.store.get(child["id"])),
+                "parentId": source["id"],
+                "build": _public_build(self.store.get_build(child["build_id"])),
+                "sourceBuild": _public_build(self.store.get_build(build_id)),
+            }
+
     def save(self, revision_id: str) -> dict:
         """Store a new saved revision. Earlier revision rows are left as they were."""
         with self._lock:
