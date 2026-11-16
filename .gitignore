@@ -1,0 +1,14 @@
+.pob/
+.venv/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+*.db
+.env
+.env.local
+apps/web/node_modules/
+apps/web/.next/
+apps/web/out/
+apps/web/tsconfig.tsbuildinfo

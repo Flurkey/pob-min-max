@@ -1,0 +1,18 @@
+---
+description: PoE Forge architecture boundaries
+alwaysApply: true
+---
+
+# Architecture
+
+PoE Forge is a local-first monorepo. Keep these boundaries:
+
+- `apps/web` is the Next.js interface. It displays engine results. It does not calculate character stats.
+- `services/engine` is the Python service. It launches Path of Building and stores builds. It does not invent modifiers or stats.
+- `engine/adapter.lua` is the only code that calls into a Path of Building checkout. Do not patch PoB files.
+- `engine/vendor/runtime` is the pinned PoB Lua runtime. Do not replace it with an older manifest hash.
+- `.pob/` is a local checkout and build output. Never commit it.
+
+A build mutation loads a copy, changes that copy, recalculates, and stores a new revision. Do not overwrite an earlier revision in place.
+
+Later phases (knowledge, agents, optimisation, trade) stay out of the engine process. They call the engine service.
