@@ -36,7 +36,9 @@ Not in this import: patch notes, and a mechanic ontology that distinguishes dama
 
 ## Phase 4 — AI agent
 
-One orchestrator and specialist roles. Models propose changes. The engine accepts or rejects them. No model call per passive node.
+Status: the tool layer is in place. A model can call typed tools. The engine calculates, and the knowledge import answers catalogue queries. Equipment and passive edits run on a library copy. Provider kinds are OpenAI, OpenAI-compatible, Anthropic, Gemini, and Ollama. This package does not call them. Tests use a fake provider.
+
+Not in this slice: the orchestrator roles, research, and ranked recommendations. No model call per passive node.
 
 ## Phase 5 — Optimisation
 

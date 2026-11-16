@@ -30,8 +30,9 @@ export POB_UTF8_DIR=/path/to/dir/with/lua-utf8.so
 - UI work stays in `apps/web`.
 - HTTP and persistence stay in `services/engine`.
 - Item, gem, and passive-tree import stays in `services/knowledge`. Query the generated database. Do not copy data files into the repo, and do not invent a fixture item or node for a test.
+- Agent tools stay in `services/agent`. They call the engine service and the knowledge store. A mutation copies a revision first.
 - Run `./scripts/test.sh` before opening a pull request. For UI changes, run the web app against a live engine and click the flow, not only the empty page.
 
 ## Secrets
 
-No API keys in this phase. When providers arrive, keys go in an uncommitted config file. Never commit `.env`.
+API keys stay in an uncommitted config file. The names are commented in `.env.example`. Never commit `.env` or a key. The test suite uses a fake provider and does not call a model API.
