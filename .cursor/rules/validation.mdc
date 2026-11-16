@@ -15,4 +15,4 @@ Character numbers come from the running Path of Building calculation (`CalcsTab:
 - If the engine cannot run, say what failed. Do not substitute a fixture number.
 - A comparison is valid only when both sides were just calculated by the engine.
 - Custom modifiers must stay visible and separate from game modifiers.
-- Do not claim a build is safe for voided content, and do not enable every buff by default.
+- Do not claim a build is safe for voided content, and do not enable every buff by default. A Valdo check lists invalidated assumptions and uncertain modifiers. It does not return a safety verdict.

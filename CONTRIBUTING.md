@@ -34,6 +34,7 @@ export POB_UTF8_DIR=/path/to/dir/with/lua-utf8.so
 - The search stays in `services/optimisation`. It calls those tools. Do not score a number that did not come from the engine, and do not call a model from that package.
 - Interaction search stays in `services/discovery`. Cite imported rows. Do not add a modifier the import does not contain, and do not call a model from that package.
 - Stage copies and crafting legality stay in `services/progression`. A stage is a new library build. Do not estimate a weight or a crafting cost from a row that does not store one.
+- Attribute totals and Valdo checks stay in `services/endgame`. Report `Str`, `Dex`, and `Int` from the engine on a library copy. A Valdo result lists invalidated assumptions and uncertain lines. Do not add a safety verdict.
 - Run `./scripts/test.sh` before opening a pull request. For UI changes, run the web app against a live engine and click the flow, not only the empty page.
 
 ## Secrets

@@ -4,6 +4,12 @@ Local-first theorycrafting for Path of Exile 1. Character numbers come from the 
 
 This repository is the PoE Forge app. It is not a build importer and it does not copy community builds into the answer.
 
+## Phase 8
+
+The endgame package (`services/endgame`) copies a library build and calculates that copy with the Path of Building engine. The report's Strength, Dexterity, and Intelligence are the engine's `Str`, `Dex`, and `Int` for the copy. The imported revision is not updated. The check does not add a jewel or an item.
+
+A Valdo check reads modifier text supplied by the user. Each line that contradicts a defensive assumption of the build calculation is listed with that assumption. A line that matches none of those phrases is marked uncertain. The result has no safety verdict, and it does not calculate the map.
+
 ## Phase 7
 
 The progression package (`services/progression`) stores a separate library build for each stage of a build: campaign, early maps, and endgame. Each stage is a saved copy of the source revision. The imported revision is not updated, and editing one stage does not change the others.
@@ -86,6 +92,7 @@ The pinned checkout is dev `e5917f81fd64c10d9bc816c410da395ed18e57ba` (15 Nov 20
 | `services/optimisation` | Deterministic candidate search over engine calculations |
 | `services/discovery` | Chains and conflicts from imported unique and modifier text |
 | `services/progression` | Stage copies of a library build, and crafting legality |
+| `services/endgame` | Engine attribute totals on a library copy, and Valdo modifier assumptions |
 | `engine/adapter.lua` | Stdio driver for an unmodified PoB checkout |
 | `engine/vendor/runtime` | PoB's Lua libraries (`xml`, `dkjson`, …) |
 | `fixtures/builds` | XML exported by the pinned engine |

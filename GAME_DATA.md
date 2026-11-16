@@ -65,6 +65,8 @@ The passive graph keeps a node when PoB would: it has a group, the group is not 
 
 `services/progression` reads the same modifier rows for crafting legality. `modType` says whether a row is a prefix or a suffix. `group` says which rows in that file cannot be combined. The importer does not copy `weightKey` or `weightVal`. A request for those weights fails instead of filling a number in. Crafting cost is not calculated from this database.
 
+`services/endgame` does not read this database for a Valdo modifier. Those lines are text the user supplies. The attribute check reads `Str`, `Dex`, and `Int` from the engine.
+
 ## Patches
 
 Patch-note ingestion is not implemented. A calculation and an imported record are true for this PoB commit and this tree only. If `dev` moves, update `engine/pin.json` and re-run the tests. Do not assume the August 2.67.2 release contains the 3.30 tree.
