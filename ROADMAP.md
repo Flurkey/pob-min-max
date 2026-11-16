@@ -60,7 +60,9 @@ Not in this slice: trade prices, crafting steps, and a currency cost. Prices sti
 
 ## Phase 8 — Advanced endgame
 
-Timeless jewels, cluster jewels, attribute stacking, defence layers, and Valdo modifiers supplied by the user. A voided map is never reported as guaranteed safe.
+Status: a library build can be copied and calculated for its attribute totals. `Str`, `Dex`, and `Int` in the report are the engine's numbers for that copy. The source revision is not updated. No jewel is added. Valdo modifier text supplied by the user lists the defensive assumptions it puts aside. A line this check cannot map is marked uncertain. The result does not call the map safe or guaranteed, and it does not calculate the map.
+
+Not in this slice: timeless jewels, cluster jewels, and trade prices.
 
 ## Reference experiment
 

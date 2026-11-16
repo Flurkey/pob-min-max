@@ -1,6 +1,6 @@
 # Testing
 
-Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine, knowledge, agent, optimisation, discovery, and progression packages into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. The Phase 3 tests import the pinned data files. The Phase 4 tests do both, and they talk to a fake model provider. The Phase 5 tests search the Scion fixture with the real engine. The Phase 6 tests search that same import for chains and conflicts. The Phase 7 tests copy a library build into stage builds and check crafts against that import. They fail if the checkout or the interpreter is missing. They do not skip.
+Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine, knowledge, agent, optimisation, discovery, progression, and endgame packages into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. The Phase 3 tests import the pinned data files. The Phase 4 tests do both, and they talk to a fake model provider. The Phase 5 tests search the Scion fixture with the real engine. The Phase 6 tests search that same import for chains and conflicts. The Phase 7 tests copy a library build into stage builds and check crafts against that import. The Phase 8 tests calculate a library copy with that engine and check Valdo text supplied in the test. They fail if the checkout or the interpreter is missing. They do not skip.
 
 ## What the suite does
 
@@ -51,6 +51,8 @@ Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engi
 | Six-mod rare | Six imported prefixes are rejected. Four imported prefixes and two imported suffixes are rejected. The reasons name that split. |
 | Closed crafts | A Watcher's Eye row with no prefix or suffix type is rejected. An unknown modifier id is an error. A modifier selected twice is rejected. |
 | Weights | `Strength1` has weights in `ModExplicit.lua` and none on the imported row. Asking for the weight raises. Asking for a crafting cost raises. The verdict has no cost and no weight. |
+| Attributes | A library copy of the Scion fixture is calculated by the engine. `Str`, `Dex`, and `Int` are 20, 20, and 20, matching that calculation. Forged `<PlayerStat>` values of 999999 are not the result. The import XML is unchanged, and equipping Glorious Plate on the copy still leaves the import at Life 60. |
+| Valdo text | Each supplied line is either a named defensive assumption or an uncertain line. A result whose verdict or assumption says the map is safe is rejected. The check does not set `engineCalculated`. |
 
 The Life numbers and the knowledge counts are locks for this pin. Neither service contains them as a substitute for the checkout. If a future PoB commit changes the result, the test fails and the pin has to move with a new measurement.
 

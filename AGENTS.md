@@ -4,7 +4,7 @@ This file is for coding agents working in this repository.
 
 ## Current phase
 
-Phase 7 progression, on top of the Phase 6 discovery import. Stage copies are new library builds. Crafting legality reads imported modifier type and group. Do not invent a weight or a price. Do not start the trade client or a live model call. Do not change the pinned Path of Building checkout. The upfront cost round in `CalcOffence.lua` stays. Do not commit API keys.
+Phase 8 endgame, on top of the Phase 7 progression library. Attribute totals come from the engine on a library copy. Valdo text is supplied by the user and must not produce a safety verdict. Do not invent a jewel, a stat, or a map result. Do not start the trade client or a live model call. Do not change the pinned Path of Building checkout. The upfront cost round in `CalcOffence.lua` stays. Do not commit API keys.
 
 ## Hard rules
 
@@ -28,6 +28,7 @@ Phase 7 progression, on top of the Phase 6 discovery import. Stage copies are ne
 - Deterministic search: `services/optimisation`. It calls those tools. It does not invent a stat and it does not call a model.
 - Interaction search: `services/discovery`. Chains and conflicts quote imported unique and modifier text. A citation missing from the database is an error.
 - Stage copies and crafting legality: `services/progression`. Copies go through `library_copy`. A craft that is not in the import, or that needs a weight the import does not store, is an error.
+- Attribute totals and Valdo modifiers: `services/endgame`. The attribute check copies a library build and reports the engine's `Str`, `Dex`, and `Int`. A Valdo line that is not mapped is uncertain. A result that says the map is safe is an error.
 
 ## Verification
 

@@ -20,6 +20,9 @@ services/discovery  --->  knowledge store
 
 services/progression  --->  engine library copies
                          knowledge store for modifier type and group
+
+services/endgame      --->  engine library copies
+                         user-supplied Valdo modifier text
 ```
 
 ## Web
@@ -104,6 +107,14 @@ A step that names an item or a modifier the import does not contain, or quotes t
 `library_copy` inserts a new build whose saved revision is the source XML. The source build's saved revision is not moved. Progression asks for one such copy per stage: campaign, early maps, and endgame. Editing a stage uses the existing equipment path, which writes a draft of that stage's build.
 
 A rare craft is checked against imported `modType` and `group`. The slot counts are the pinned item editor's: a rare that is not a jewel or a graft has six explicit mods, and the editor splits that limit into prefixes and suffixes. A group conflict is reported only when the imported rows carry the same group in the same file. Weights are not on those rows. The check refuses a weight and refuses a crafting cost.
+
+## Endgame
+
+`services/endgame` calls the engine library. It does not calculate a stat of its own and it does not call a model.
+
+`attribute_stack` stores a new library build whose saved revision is the source XML, then calls `calculate` on that copy. The returned `Str`, `Dex`, and `Int` are taken from that engine stat table. A missing attribute is an error. The source build's saved revision and XML stay as they were. The copy is not given a jewel or an item.
+
+`check_valdo` reads modifier lines the user supplied. A line that states a lower maximum resistance, a missing or reduced defensive layer, a curse, penetration, extra damage of another type, a forced ailment, or a critical-strike change is listed against that assumption. A line that matches none of those phrases is returned as uncertain. The result quotes the user's line, sets `engineCalculated` to false, and is rejected if its own wording says the map is safe or guaranteed.
 
 ## What is intentionally absent
 
