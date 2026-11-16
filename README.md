@@ -4,6 +4,23 @@ Local-first theorycrafting for Path of Exile 1. Character numbers come from the 
 
 This repository is the PoE Forge app. It is not a build importer and it does not copy community builds into the answer.
 
+## Phase 3
+
+The knowledge package imports the pinned checkout's game data into SQLite (`data/knowledge.sqlite`, or `POB_KNOWLEDGE`):
+
+- Item bases, unique-item text, and modifier lines.
+- Skill gems and the granted-effect tables those gems name.
+- The passive tree as a graph. An allocation that does not connect to the class start is rejected. The point cap is the tree file's own budget.
+
+Every imported record carries provenance: source repository, commit, tree version, manifest version, and the UTC retrieval date. The importer reads the Lua data files. It does not start the calculation runtime and it does not write into the checkout.
+
+```bash
+./.venv/bin/pob-knowledge import
+./.venv/bin/pob-knowledge show "Glorious Plate"
+```
+
+Patch-note ingestion is not part of this import.
+
 ## Phase 2
 
 The web app is a local build library:
@@ -34,6 +51,7 @@ The pinned checkout is dev `e5917f81fd64c10d9bc816c410da395ed18e57ba` (15 Nov 20
 | --- | --- |
 | `apps/web` | Next.js console |
 | `services/engine` | FastAPI service and build store |
+| `services/knowledge` | Item, gem, and passive-tree import |
 | `engine/adapter.lua` | Stdio driver for an unmodified PoB checkout |
 | `engine/vendor/runtime` | PoB's Lua libraries (`xml`, `dkjson`, …) |
 | `fixtures/builds` | XML exported by the pinned engine |
@@ -59,7 +77,7 @@ npm run dev
 
 Open the console at `http://127.0.0.1:3000`. The page proxies `/api` to the engine on port 8000.
 
-`POB_SRC`, `POB_LUA`, `POB_UTF8_DIR`, `POB_RUNTIME`, and `POB_USER` override the defaults from `.env.example`.
+`POB_SRC`, `POB_LUA`, `POB_UTF8_DIR`, `POB_RUNTIME`, `POB_USER`, `POB_LIBRARY`, and `POB_KNOWLEDGE` override the defaults from `.env.example`.
 
 ## Docs
 

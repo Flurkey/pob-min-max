@@ -1,6 +1,6 @@
 # Testing
 
-Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine package into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. They fail if the checkout or the interpreter is missing. They do not skip.
+Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine and knowledge packages into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. The Phase 3 tests import the pinned data files. They fail if the checkout or the interpreter is missing. They do not skip.
 
 ## What the suite does
 
@@ -22,8 +22,18 @@ Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engi
 | Export | The saved revision's export parses as `<PathOfBuilding>` and reimports at the same engine Life as the save. |
 | PoB saves | A decoy XML in the headless user Builds directory is not a library entry. The checkout has no local modifications. |
 | HTTP library | Library, history, save, discard refusal, inspect, compare, and export go through the API. |
+| Knowledge pin | The importer refuses a checkout whose commit is not `engine/pin.json`. |
+| Knowledge counts | The import has the bases, uniques, mods, gems, nodes, and edges of this pin. |
+| Glorious Plate | Base armour and requirements, and Kaom's Heart raw text, match the data files. |
+| Gems | Kinetic Blast and Inspiration keep their granted effects, tags, and level rows. |
+| Modifier text | The Watcher's Eye Clarity mana-cost line is present, with its source path. |
+| Passive graph | The Life node is reachable from the Scion start. Dropping the bridge, a lone node, an unknown id, and a pair that does not touch the start are rejected. |
+| Point budget | 124 connected regular nodes are rejected. 123 are accepted. Nine Juggernaut points are rejected. Witch cannot take Juggernaut. |
+| Checkout untouched | After the import, `git status` in the PoB checkout is clean, and `CalcOffence.lua` still rounds upfront costs after efficiency. |
 
-The Life numbers are locks for this pin. The service does not contain them. If a future PoB commit changes the result, the test fails and the pin has to move with a new measurement.
+The Life numbers and the knowledge counts are locks for this pin. Neither service contains them as a substitute for the checkout. If a future PoB commit changes the result, the test fails and the pin has to move with a new measurement.
+
+Phase 3 tests build the SQLite file from the live checkout in a temporary directory. They do not use a hand-written item, gem, or node.
 
 ## What was not run
 

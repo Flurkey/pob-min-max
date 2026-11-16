@@ -30,7 +30,9 @@ Not in Phase 2: share codes and pobb.in links. Those stay with the import work t
 
 ## Phase 3 — Knowledge engine
 
-Items, the passive tree as a graph, gems, and patch notes, with provenance on mechanics that are easy to confuse (damage, life loss, reservation, costs).
+Status: item bases, unique text, modifier lines, skill gems, and the passive tree are imported from the pinned checkout. Each record stores source, commit, tree version, manifest version, and retrieval date. The passive graph rejects a disconnected allocation and a point total above the tree file's budget.
+
+Not in this import: patch notes, and a mechanic ontology that distinguishes damage, life loss, reservation, and costs. Those still belong to Phase 3 and are not done.
 
 ## Phase 4 — AI agent
 
