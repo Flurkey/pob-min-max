@@ -67,6 +67,10 @@ The library is this repo's SQLite file. Imports, drafts, and saves are rows in t
 
 The pin is unchanged. `CalcOffence.lua` on `e5917f81` still rounds an upfront non-percent cost to a whole number after cost efficiency and before the flat total. That round is not removed to match the 7 Aug 2026 desktop build.
 
+## Phase 3
+
+The knowledge importer reads `src/Data` and `src/TreeData` from the same checkout with LuaJIT. It does not launch `HeadlessWrapper.lua` and it does not modify the checkout. Provenance on each import is this commit, tree `3_30`, and manifest `2.67.2`. The `CalcOffence.lua` post-efficiency round is unchanged.
+
 ## Rejected shortcuts
 
 - Treating `<PlayerStat>` as live.

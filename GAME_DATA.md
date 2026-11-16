@@ -1,6 +1,6 @@
 # Game data
 
-Phase 1 uses the game data that ships inside the pinned Path of Building checkout. This repo does not carry its own item or passive database.
+Character calculations still use the data inside the pinned Path of Building checkout. Phase 3 also copies that checkout's item bases, unique text, modifier lines, skill gems, and passive tree into a generated SQLite file so other code can query them without starting a second calculation process. The file is `data/knowledge.sqlite` (override `POB_KNOWLEDGE`). It is not committed, and it is not a substitute for `CalcsTab:BuildOutput`.
 
 ## Version that actually loads
 
@@ -34,6 +34,33 @@ On 15 Nov 2026 the pinned engine reported:
 
 Those figures are regression locks in `services/engine/tests/test_phase1.py`. They are not constants the service returns instead of calculating.
 
+## Knowledge import
+
+`services/knowledge` reads the checkout with LuaJIT. The reader loads the same data files `Modules/Data.lua` lists, plus `TreeData/<latestTreeVersion>/tree.lua`. It does not load `HeadlessWrapper.lua`, and it does not write into `.pob/`.
+
+| Data | Source files |
+| --- | --- |
+| Item bases | `src/Data/Bases/*.lua` |
+| Unique text | `src/Data/Uniques/*.lua` and `src/Data/Uniques/Special/race.lua` |
+| Modifier lines | The modifier tables `Modules/Data.lua` loads, including `src/Data/Uniques/Special/WatchersEye.lua` |
+| Skill gems | `src/Data/Gems.lua` and the skill files it grants |
+| Passive graph | `src/TreeData/3_30/tree.lua` on this pin |
+
+`Data/Uniques/Special/Generated.lua` and `New.lua` are not executed. They synthesize text and need the full data environment. Watcher's Eye modifiers come from the source table instead.
+
+Each import row stores:
+
+- `source`: `PathOfBuildingCommunity/PathOfBuilding`
+- `sourceCommit` and the GitHub tree URL for that commit
+- `gameVersion`: the tree display (`3.30`), not the manifest
+- `treeVersion`: `3_30`
+- `manifestVersion`: `2.67.2` on this pin
+- `retrievalDate`: the UTC date of the import
+
+The passive graph keeps a node when PoB would: it has a group, the group is not a proxy, the node is not a proxy, and it is not an expansion-jewel parent. Edges come from each node's `in` and `out` lists. Class starts and the selected ascendancy start are allocated for free. Mastery nodes do not connect other nodes. Ascendancy nodes are not a path through the main tree. An allocation that cannot reach the matching start is rejected. The point cap is `points.totalPoints` (123) and `points.ascendancyPoints` (8), plus any passive points the allocated nodes themselves grant.
+
+`./.venv/bin/pob-knowledge import` writes the database. `show` prints one base, unique, or gem.
+
 ## Patches
 
-Selecting a league and invalidating stale notes is Phase 3. Until then, a calculation is true for this PoB commit and this tree only. If `dev` moves, update `engine/pin.json` and re-run the tests. Do not assume the August 2.67.2 release contains the 3.30 tree.
+Patch-note ingestion is not implemented. A calculation and an imported record are true for this PoB commit and this tree only. If `dev` moves, update `engine/pin.json` and re-run the tests. Do not assume the August 2.67.2 release contains the 3.30 tree.

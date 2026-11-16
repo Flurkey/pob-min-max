@@ -1,10 +1,13 @@
 # Architecture
 
-The monorepo has three runnable parts. Later phases add knowledge, agents, and optimisation beside them. They do not replace the engine.
+The monorepo has four runnable parts. Later phases add agents and optimisation beside them. They do not replace the engine.
 
 ```text
 apps/web  --->  services/engine  --->  engine/adapter.lua  --->  Path of Building src/
                  SQLite revisions                              CalcsTab:BuildOutput
+
+services/knowledge  --->  LuaJIT data reader  --->  Path of Building src/Data and TreeData
+                        SQLite items, gems, tree
 ```
 
 ## Web
@@ -41,6 +44,17 @@ After every edit, the adapter calls `BuildOutput`. When auto-level is on, it als
 
 `SaveDB` writes `<PlayerStat>` from `mainOutput` at export time. The next import still calculates from items, tree, skills, and configuration.
 
+## Knowledge service
+
+`services/knowledge` is a separate package. It reads item, gem, and passive-tree files from the pinned checkout and stores them in `data/knowledge.sqlite`.
+
+- The reader is LuaJIT plus the vendored `dkjson`. It does not start `HeadlessWrapper` and it does not call `engine/adapter.lua`.
+- It refuses a checkout whose commit or manifest version disagrees with `engine/pin.json`.
+- The passive graph rejects an allocation that does not connect to the class start, and it rejects one that spends more points than the tree file allows.
+- Public records include the source repository, commit, tree version, manifest version, and retrieval date.
+
+The web app does not query this database yet.
+
 ## What is intentionally absent
 
-AI providers, MCP tools, trade prices, the knowledge graph, and the optimisation search are later phases. The web console is the library, inspector, history, and comparison. It is not the full dashboard from the roadmap.
+AI providers, MCP tools, trade prices, patch-note ingestion, and the optimisation search are later work. The web console is the library, inspector, history, and comparison. It is not the full dashboard from the roadmap.

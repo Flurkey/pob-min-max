@@ -29,6 +29,7 @@ export POB_UTF8_DIR=/path/to/dir/with/lua-utf8.so
 
 - UI work stays in `apps/web`.
 - HTTP and persistence stay in `services/engine`.
+- Item, gem, and passive-tree import stays in `services/knowledge`. Query the generated database. Do not copy data files into the repo, and do not invent a fixture item or node for a test.
 - Run `./scripts/test.sh` before opening a pull request. For UI changes, run the web app against a live engine and click the flow, not only the empty page.
 
 ## Secrets

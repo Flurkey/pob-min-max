@@ -10,6 +10,7 @@ Character numbers come from the running Path of Building calculation (`CalcsTab:
 - Do not read `<PlayerStat>` from build XML and present it as a current result. Those tags are a cache written at save time.
 - Do not hard-code Life, DPS, resistances, or prices as if they had been calculated.
 - Do not mark a mechanic, node, item, or interaction as supported unless the pinned PoB data or an authoritative source says so.
+- Imported items, gems, mods, and passive nodes come from the pinned checkout. Record source, commit, tree version, and retrieval date. Tests use that checkout, not an invented fixture. A passive allocation that does not connect to the class start is invalid.
 - Record the PoB git revision and the tree version beside any calculation you persist.
 - If the engine cannot run, say what failed. Do not substitute a fixture number.
 - A comparison is valid only when both sides were just calculated by the engine.
