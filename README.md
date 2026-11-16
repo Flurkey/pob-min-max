@@ -1,8 +1,19 @@
 # PoE Forge
 
-Local-first theorycrafting for Path of Exile 1. Phase 1 checks every character number with the real [Path of Building](https://github.com/PathOfBuildingCommunity/PathOfBuilding) calculation engine.
+Local-first theorycrafting for Path of Exile 1. Character numbers come from the real [Path of Building](https://github.com/PathOfBuildingCommunity/PathOfBuilding) calculation engine.
 
 This repository is the PoE Forge app. It is not a build importer and it does not copy community builds into the answer.
+
+## Phase 2
+
+The web app is a local build library:
+
+- Builds are stored in SQLite (`data/library.sqlite`, or `POB_LIBRARY`). That file is not a Path of Building save folder.
+- The inspector shows stats from `CalcsTab:BuildOutput` for the selected revision.
+- Version history lists every revision of a build.
+- Comparison recalculates two revisions and shows the engine's deltas.
+- Equipment and passive edits are written to a working copy. The stored revision changes only when you save.
+- Export returns Path of Building XML for the selected revision.
 
 ## Phase 1
 

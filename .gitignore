@@ -6,6 +6,8 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 *.db
+*.sqlite
+data/
 .env
 .env.local
 apps/web/node_modules/

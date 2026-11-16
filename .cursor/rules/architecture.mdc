@@ -13,6 +13,6 @@ PoE Forge is a local-first monorepo. Keep these boundaries:
 - `engine/vendor/runtime` is the pinned PoB Lua runtime. Do not replace it with an older manifest hash.
 - `.pob/` is a local checkout and build output. Never commit it.
 
-A build mutation loads a copy, changes that copy, recalculates, and stores a new revision. Do not overwrite an earlier revision in place.
+A build mutation loads a copy, changes that copy, recalculates, and stores a new revision. Do not overwrite an earlier revision in place. The library's saved revision changes only when the user saves. The library file is SQLite, not a Path of Building Builds directory.
 
 Later phases (knowledge, agents, optimisation, trade) stay out of the engine process. They call the engine service.

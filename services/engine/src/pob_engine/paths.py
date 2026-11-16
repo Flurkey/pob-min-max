@@ -45,6 +45,13 @@ def resolve_paths() -> EnginePaths:
     )
 
 
+def library_path() -> Path:
+    """Local SQLite library. This is not a Path of Building Builds directory."""
+    override = os.environ.get("POB_LIBRARY")
+    path = Path(override) if override else repo_root() / "data" / "library.sqlite"
+    return path
+
+
 def git_head(src: Path) -> str:
     completed = subprocess.run(
         ["git", "-C", str(src), "rev-parse", "HEAD"],

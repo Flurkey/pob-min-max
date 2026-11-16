@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "PoE Forge",
-  description: "Phase 1 console for the Path of Building calculation engine.",
+  description: "Local Path of Building library, inspector, and comparison.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

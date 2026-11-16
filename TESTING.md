@@ -16,6 +16,12 @@ Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engi
 | FTS | A revision name is findable through SQLite FTS5. |
 | HTTP | `POST /api/builds` and the equipment route return the same Life values. |
 | Compare guard | A stat table whose `source` is not `pob-engine` is rejected without launching a character. |
+| Library store | A draft row does not replace the saved revision, and discarding a draft leaves the stored XML in place. |
+| Safe edit | Import, copy, equip, and allocate leave the imported XML byte-for-byte unchanged. Save writes a new row. The original still calculates as Life 60. |
+| Inspector | The stored revision and the edited revision each return `source: pob-engine`, with class and equipped items from the live build. |
+| Export | The saved revision's export parses as `<PathOfBuilding>` and reimports at the same engine Life as the save. |
+| PoB saves | A decoy XML in the headless user Builds directory is not a library entry. The checkout has no local modifications. |
+| HTTP library | Library, history, save, discard refusal, inspect, compare, and export go through the API. |
 
 The Life numbers are locks for this pin. The service does not contain them. If a future PoB commit changes the result, the test fails and the pin has to move with a new measurement.
 
