@@ -4,6 +4,12 @@ Local-first theorycrafting for Path of Exile 1. Character numbers come from the 
 
 This repository is the PoE Forge app. It is not a build importer and it does not copy community builds into the answer.
 
+## Phase 7
+
+The progression package (`services/progression`) stores a separate library build for each stage of a build: campaign, early maps, and endgame. Each stage is a saved copy of the source revision. The imported revision is not updated, and editing one stage does not change the others.
+
+Crafting legality reads imported modifier rows. A normal rare has six explicit slots, split into 3 prefixes and 3 suffixes. Two modifiers that share a group in the same imported file cannot both be placed. A six-mod rare that is not that 3 and 3 split is rejected. A modifier the import does not type as a prefix or a suffix is rejected. The import does not store weights. Asking for a weight or a crafting cost is refused. No price is estimated.
+
 ## Phase 6
 
 The discovery package (`services/discovery`) searches the imported unique items and modifier lines. A chain is two cited lines that share a phrase taken from that text: a granted skill and a line that names it, an increase and a line that says those increases also apply, or a line that scales per a stat another line adds. A conflict cites a shared modifier group, Variant or Version headers, a line that forbids a status and a line that requires it, or an aura-disable line and a line that requires a different aura.
@@ -79,6 +85,7 @@ The pinned checkout is dev `e5917f81fd64c10d9bc816c410da395ed18e57ba` (15 Nov 20
 | `services/agent` | Typed agent tools and the model-provider interface |
 | `services/optimisation` | Deterministic candidate search over engine calculations |
 | `services/discovery` | Chains and conflicts from imported unique and modifier text |
+| `services/progression` | Stage copies of a library build, and crafting legality |
 | `engine/adapter.lua` | Stdio driver for an unmodified PoB checkout |
 | `engine/vendor/runtime` | PoB's Lua libraries (`xml`, `dkjson`, …) |
 | `fixtures/builds` | XML exported by the pinned engine |
