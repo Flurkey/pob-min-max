@@ -4,6 +4,16 @@ Local-first theorycrafting for Path of Exile 1. Character numbers come from the 
 
 This repository is the PoE Forge app. It is not a build importer and it does not copy community builds into the answer.
 
+## Phase 4
+
+The agent package (`services/agent`) exposes typed tools over the engine and the knowledge database: import, inspect, calculate, compare, search uniques, gems, and passive nodes, find a passive path, allocate, equip, and export.
+
+`equip_item` and `allocate_passives` copy the revision first. The imported XML stays as it was. Character numbers in a tool result come from the running engine. Catalogue rows come from the imported checkout, with the source commit on each record.
+
+OpenAI, OpenAI-compatible endpoints, Anthropic, Gemini, and Ollama have a request interface. This package does not open a network connection. Keys stay in an uncommitted local file. The tests use a fake provider.
+
+Research workflows and recommendation ranking are not in this slice.
+
 ## Phase 3
 
 The knowledge package imports the pinned checkout's game data into SQLite (`data/knowledge.sqlite`, or `POB_KNOWLEDGE`):
@@ -52,6 +62,7 @@ The pinned checkout is dev `e5917f81fd64c10d9bc816c410da395ed18e57ba` (15 Nov 20
 | `apps/web` | Next.js console |
 | `services/engine` | FastAPI service and build store |
 | `services/knowledge` | Item, gem, and passive-tree import |
+| `services/agent` | Typed agent tools and the model-provider interface |
 | `engine/adapter.lua` | Stdio driver for an unmodified PoB checkout |
 | `engine/vendor/runtime` | PoB's Lua libraries (`xml`, `dkjson`, …) |
 | `fixtures/builds` | XML exported by the pinned engine |

@@ -11,6 +11,7 @@ PoE Forge is a local-first monorepo. Keep these boundaries:
 - `services/engine` is the Python service. It launches Path of Building and stores builds. It does not invent modifiers or stats.
 - `engine/adapter.lua` is the only code that starts a Path of Building calculation. Do not patch PoB files.
 - `services/knowledge` may read `src/Data` and `src/TreeData` through its Lua data importer. It does not start `HeadlessWrapper`, does not write into the checkout, and does not vendor those trees.
+- `services/agent` calls the engine service and the knowledge store. It does not calculate stats, does not import Lua, and does not send a model request unless the caller supplies a transport. Mutations copy a library revision first.
 - `engine/vendor/runtime` is the pinned PoB Lua runtime. Do not replace it with an older manifest hash.
 - `.pob/` is a local checkout and build output. Never commit it.
 

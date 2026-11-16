@@ -8,6 +8,9 @@ apps/web  --->  services/engine  --->  engine/adapter.lua  --->  Path of Buildin
 
 services/knowledge  --->  LuaJIT data reader  --->  Path of Building src/Data and TreeData
                         SQLite items, gems, tree
+
+services/agent  --->  engine service and knowledge store
+                  model provider interface (no network in this package)
 ```
 
 ## Web
@@ -53,8 +56,18 @@ After every edit, the adapter calls `BuildOutput`. When auto-level is on, it als
 - The passive graph rejects an allocation that does not connect to the class start, and it rejects one that spends more points than the tree file allows.
 - Public records include the source repository, commit, tree version, manifest version, and retrieval date.
 
-The web app does not query this database yet.
+The web app does not query this database yet. The agent tools do.
+
+## Agent tools
+
+`services/agent` is a separate package. It does not calculate stats and it does not import Lua.
+
+- Each tool has a typed argument schema. Unknown names and arguments that do not match the schema are rejected.
+- `import_build`, `get_build_state`, `calculate_build`, `compare_builds`, `equip_item`, `allocate_passives`, and `export_build` call the engine service. A calculation is published only when its `source` is `pob-engine`.
+- `search_unique_items`, `search_skill_gems`, `search_passive_nodes`, and `find_passive_path` read the knowledge database. Records keep the import's source commit.
+- `equip_item` and `allocate_passives` copy the caller's revision, then edit the copy. A disconnected passive set or a point total above the tree file's budget is rejected before that copy is kept. The imported row is not updated.
+- The provider interface can describe an OpenAI, OpenAI-compatible, Anthropic, Gemini, or Ollama request. `complete` sends only through a transport the caller supplies. With no transport it refuses. The tests use a fake provider, so a tool result cannot be a number the model wrote down.
 
 ## What is intentionally absent
 
-AI providers, MCP tools, trade prices, patch-note ingestion, and the optimisation search are later work. The web console is the library, inspector, history, and comparison. It is not the full dashboard from the roadmap.
+Trade prices, patch-note ingestion, recommendation workflows, and the optimisation search are later work. The web console is the library, inspector, history, and comparison. It is not the full dashboard from the roadmap.

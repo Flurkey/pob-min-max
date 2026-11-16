@@ -330,16 +330,26 @@ class KnowledgeStore:
         ).fetchall()
         return [self._public_record(json.loads(row["record_json"])) for row in rows]
 
-    def search(self, query: str, limit: int = 20) -> list[dict]:
+    def search(self, query: str, limit: int = 20, *, kind: str | None = None) -> list[dict]:
         phrase = '"' + query.replace('"', " ") + '"'
-        rows = self.conn.execute(
-            """
-            SELECT kind, name, ref FROM knowledge_search
-            WHERE import_id = ? AND knowledge_search MATCH ?
-            LIMIT ?
-            """,
-            (self._import_id(), phrase, limit),
-        ).fetchall()
+        if kind is None:
+            rows = self.conn.execute(
+                """
+                SELECT kind, name, ref FROM knowledge_search
+                WHERE import_id = ? AND knowledge_search MATCH ?
+                LIMIT ?
+                """,
+                (self._import_id(), phrase, limit),
+            ).fetchall()
+        else:
+            rows = self.conn.execute(
+                """
+                SELECT kind, name, ref FROM knowledge_search
+                WHERE import_id = ? AND kind = ? AND knowledge_search MATCH ?
+                LIMIT ?
+                """,
+                (self._import_id(), kind, phrase, limit),
+            ).fetchall()
         provenance = self._provenance_fields()
         return [
             {"kind": row["kind"], "name": row["name"], "ref": row["ref"], **provenance}
