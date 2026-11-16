@@ -61,6 +61,8 @@ The passive graph keeps a node when PoB would: it has a group, the group is not 
 
 `./.venv/bin/pob-knowledge import` writes the database. `show` prints one base, unique, or gem.
 
+`services/discovery` reads this database. It pairs lines that already share a phrase and reports conflicts that the text or a modifier `group` already states. It does not add rows and it does not invent a modifier.
+
 ## Patches
 
 Patch-note ingestion is not implemented. A calculation and an imported record are true for this PoB commit and this tree only. If `dev` moves, update `engine/pin.json` and re-run the tests. Do not assume the August 2.67.2 release contains the 3.30 tree.

@@ -330,6 +330,39 @@ class KnowledgeStore:
         ).fetchall()
         return [self._public_record(json.loads(row["record_json"])) for row in rows]
 
+    def all_uniques(self) -> list[dict]:
+        rows = self.conn.execute(
+            """
+            SELECT name, base_name, category, source_path, raw_text
+            FROM unique_items WHERE import_id = ?
+            ORDER BY source_path, id
+            """,
+            (self._import_id(),),
+        ).fetchall()
+        return [self._public_unique(row) for row in rows]
+
+    def all_mods(self) -> list[dict]:
+        rows = self.conn.execute(
+            """
+            SELECT record_json FROM item_mods
+            WHERE import_id = ?
+            ORDER BY source_path, mod_id, id
+            """,
+            (self._import_id(),),
+        ).fetchall()
+        return [self._public_record(json.loads(row["record_json"])) for row in rows]
+
+    def mods_by_id(self, mod_id: str) -> list[dict]:
+        rows = self.conn.execute(
+            """
+            SELECT record_json FROM item_mods
+            WHERE import_id = ? AND mod_id = ?
+            ORDER BY source_path, id
+            """,
+            (self._import_id(), mod_id),
+        ).fetchall()
+        return [self._public_record(json.loads(row["record_json"])) for row in rows]
+
     def search(self, query: str, limit: int = 20, *, kind: str | None = None) -> list[dict]:
         phrase = '"' + query.replace('"', " ") + '"'
         if kind is None:

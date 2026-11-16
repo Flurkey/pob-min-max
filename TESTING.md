@@ -1,6 +1,6 @@
 # Testing
 
-Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine, knowledge, agent, and optimisation packages into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. The Phase 3 tests import the pinned data files. The Phase 4 tests do both, and they talk to a fake model provider. The Phase 5 tests search the Scion fixture with the real engine. They fail if the checkout or the interpreter is missing. They do not skip.
+Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engine.sh`. The suite installs the engine, knowledge, agent, optimisation, and discovery packages into `.venv` and runs pytest. The Phase 1 tests start LuaJIT. The Phase 3 tests import the pinned data files. The Phase 4 tests do both, and they talk to a fake model provider. The Phase 5 tests search the Scion fixture with the real engine. The Phase 6 tests search that same import for chains and conflicts. They fail if the checkout or the interpreter is missing. They do not skip.
 
 ## What the suite does
 
@@ -42,10 +42,13 @@ Run `./scripts/test.sh` from the repository root after `./scripts/bootstrap_engi
 | Cache | A second identical plate trial is served from the cache and matches the engine stats of the first trial. Calculating the unchanged import hits the same cache. |
 | Limits | `max_iterations` of 1 stops after the plate. Cancel before the first candidate, and cancel between candidates, both stop without editing the import. |
 | Impossible objective | A Life minimum of 1000000 is reported as impossible. The plate trial still shows the engine's Life. |
+| Chains | Every chain step is an imported unique or modifier line. The shared phrase is in both excerpts. Grant, also-apply, for-every, and per-stat links are all present. A minion-only increase is not used as the character's stat. |
+| Unknown citation | A unique name that is not in the import, a modifier id that is not in the import, an excerpt pasted onto a different unique, and a gem citation are rejected. |
+| Conflicts | A status conflict quotes a forbid line and a `while` line from the import. A modifier-group conflict uses the imported `group` field. Variant and Version headers are quoted from the unique text. An aura-disable line is paired with a different aura the import names. |
 
 The Life numbers and the knowledge counts are locks for this pin. Neither service contains them as a substitute for the checkout. If a future PoB commit changes the result, the test fails and the pin has to move with a new measurement.
 
-Phase 3 tests build the SQLite file from the live checkout in a temporary directory. They do not use a hand-written item, gem, or node.
+Phase 3 tests build the SQLite file from the live checkout in a temporary directory. They do not use a hand-written item, gem, or node. Phase 6 searches that import. A chain is kept only when both excerpts are in the stored rows.
 
 ## What was not run
 

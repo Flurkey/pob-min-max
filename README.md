@@ -4,6 +4,12 @@ Local-first theorycrafting for Path of Exile 1. Character numbers come from the 
 
 This repository is the PoE Forge app. It is not a build importer and it does not copy community builds into the answer.
 
+## Phase 6
+
+The discovery package (`services/discovery`) searches the imported unique items and modifier lines. A chain is two cited lines that share a phrase taken from that text: a granted skill and a line that names it, an increase and a line that says those increases also apply, or a line that scales per a stat another line adds. A conflict cites a shared modifier group, Variant or Version headers, a line that forbids a status and a line that requires it, or an aura-disable line and a line that requires a different aura.
+
+The search does not calculate character stats and it does not call a model. A chain that names an item or a modifier the import does not contain is rejected.
+
 ## Phase 5
 
 The optimisation package (`services/optimisation`) searches a library build without editing the original import. It copies the revision, then tries equipment and passive candidates through the agent tools. Each kept copy is recalculated by the Path of Building engine. A disconnected passive set, or one over the tree's point budget or a caller point budget, is rejected. Results are ranked by a stated objective, such as Life. Identical builds are cached by their canonical hash, the PoB revision, and the configuration profile. A search stops at a max iteration count or when a cancel token is set.
@@ -72,6 +78,7 @@ The pinned checkout is dev `e5917f81fd64c10d9bc816c410da395ed18e57ba` (15 Nov 20
 | `services/knowledge` | Item, gem, and passive-tree import |
 | `services/agent` | Typed agent tools and the model-provider interface |
 | `services/optimisation` | Deterministic candidate search over engine calculations |
+| `services/discovery` | Chains and conflicts from imported unique and modifier text |
 | `engine/adapter.lua` | Stdio driver for an unmodified PoB checkout |
 | `engine/vendor/runtime` | PoB's Lua libraries (`xml`, `dkjson`, …) |
 | `fixtures/builds` | XML exported by the pinned engine |
