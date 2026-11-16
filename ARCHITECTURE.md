@@ -1,6 +1,6 @@
 # Architecture
 
-Phase 1 is a local monorepo with three runnable parts. Later phases add knowledge, agents, and optimisation beside them. They do not replace the engine.
+The monorepo has three runnable parts. Later phases add knowledge, agents, and optimisation beside them. They do not replace the engine.
 
 ```text
 apps/web  --->  services/engine  --->  engine/adapter.lua  --->  Path of Building src/
@@ -9,7 +9,7 @@ apps/web  --->  services/engine  --->  engine/adapter.lua  --->  Path of Buildin
 
 ## Web
 
-`apps/web` is a Next.js app. It imports a build, shows the engine's stat table, applies the Phase 1 equipment and passive edits, and displays the XML the engine exports. It has no damage formulas.
+`apps/web` is a Next.js app. It lists the SQLite library, inspects a revision, shows version history, compares two calculations, and exports XML. Equipment and passive edits run only on a working copy. It has no damage formulas.
 
 The dev server rewrites `/api/*` to the Python process on `127.0.0.1:8000`.
 
@@ -19,10 +19,13 @@ The dev server rewrites `/api/*` to the Python process on `127.0.0.1:8000`.
 
 - One LuaJIT process stays open. Requests are JSON, one object per line.
 - Each import or edit stores a new revision. The parent revision is left as it was.
-- SQLite keeps the XML, a search index (FTS5), and a log of calculations. The log is an audit trail. `calculate` always calls the engine again.
+- A build has one saved revision. Imports and explicit saves point `saved_revision_id` at a new row. Equipment edits, passive edits, and copies insert `draft` rows and leave that pointer where it was.
+- Discard deletes one leaf draft. It refuses the saved revision and any revision that already has a child.
+- SQLite keeps the XML, a search index (FTS5), and a log of calculations. The log is an audit trail. `calculate` and `inspect` always call the engine again.
 - Compare loads each revision and calculates both. A stat table is rejected unless `source` is `pob-engine`.
+- The default library file is `data/library.sqlite`. The headless process uses a temporary user directory and does not read Path of Building's Builds folder.
 
-The service binds to loopback. There is no account system in Phase 1.
+The service binds to loopback. There is no account system.
 
 ## Adapter
 
@@ -40,4 +43,4 @@ After every edit, the adapter calls `BuildOutput`. When auto-level is on, it als
 
 ## What is intentionally absent
 
-AI providers, MCP tools, trade prices, the knowledge graph, and the optimisation search are later phases. The web console is the Phase 1 surface, not the full dashboard from the roadmap.
+AI providers, MCP tools, trade prices, the knowledge graph, and the optimisation search are later phases. The web console is the library, inspector, history, and comparison. It is not the full dashboard from the roadmap.

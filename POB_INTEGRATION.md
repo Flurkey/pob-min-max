@@ -61,6 +61,12 @@ Linux, LuaJIT 2.1.1794386141, PoB `e5917f81`, tree 3.30:
 
 Desktop Path of Building was not run. There is no Windows GUI or Wine in the environment that produced this result, so there is no headless-versus-desktop diff yet. The round trip above is headless versus a second headless import of the file the first process saved.
 
+## Phase 2
+
+The library is this repo's SQLite file. Imports, drafts, and saves are rows in that file. The adapter still sets the headless user path to a temp directory and turns off dev autosave, so a calculation does not read or write a desktop Path of Building Builds folder.
+
+The pin is unchanged. `CalcOffence.lua` on `e5917f81` still rounds an upfront non-percent cost to a whole number after cost efficiency and before the flat total. That round is not removed to match the 7 Aug 2026 desktop build.
+
 ## Rejected shortcuts
 
 - Treating `<PlayerStat>` as live.

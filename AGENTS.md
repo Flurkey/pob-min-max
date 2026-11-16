@@ -4,7 +4,7 @@ This file is for coding agents working in this repository.
 
 ## Current phase
 
-Phase 1 only: launch Path of Building, import, edit equipment and passives, recalculate, compare, export. Do not start the knowledge base, trade client, or optimiser.
+Phase 2: the SQLite build library, inspector, history, comparison, safe edits, and XML export, on top of the Phase 1 engine. Do not start the knowledge base, trade client, or optimiser. Do not change the pinned Path of Building checkout. The upfront cost round in `CalcOffence.lua` stays.
 
 ## Hard rules
 

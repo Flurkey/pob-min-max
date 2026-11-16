@@ -17,7 +17,16 @@ Not in Phase 1: share-code decode, pobb.in import, account import, cluster jewel
 
 ## Phase 2 — Build management
 
-Library, inspector, history, side-by-side comparison, safe editing, and export of XML plus supported share codes. Revisions from Phase 1 are the storage model.
+Status: implemented on the Phase 1 engine pin.
+
+- SQLite library of builds, separate from Path of Building save files.
+- Inspector for a fresh engine calculation of the selected revision.
+- Version history of immutable revisions.
+- Side-by-side comparison of two fresh calculations.
+- Edits land on a working copy. The stored revision moves only on save.
+- Export of Path of Building XML.
+
+Not in Phase 2: share codes and pobb.in links. Those stay with the import work that Phase 1 deferred.
 
 ## Phase 3 — Knowledge engine
 

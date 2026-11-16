@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 from pob_engine.errors import EngineError
 from pob_engine.examples import LIFE_PLATE
-from pob_engine.paths import resolve_paths
+from pob_engine.paths import library_path, resolve_paths
 from pob_engine.service import EngineService
 
 
@@ -31,17 +31,21 @@ class CompareBody(BaseModel):
     rightRevisionId: str
 
 
+class CopyBody(BaseModel):
+    revisionId: str | None = None
+
+
 def create_app(service: EngineService | None = None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         if getattr(app.state, "service", None) is None:
-            app.state.service = EngineService.start()
+            app.state.service = EngineService.start(store_path=library_path())
             app.state.owns_service = True
         yield
         if getattr(app.state, "owns_service", False):
             app.state.service.close()
 
-    app = FastAPI(title="PoE Forge engine", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="PoE Forge engine", version="0.2.0", lifespan=lifespan)
     if service is not None:
         app.state.service = service
 
@@ -51,7 +55,7 @@ def create_app(service: EngineService | None = None) -> FastAPI:
 
     @app.exception_handler(KeyError)
     async def missing(_request, exc: KeyError):
-        return JSONResponse(status_code=404, content={"detail": f"Unknown revision {exc.args[0]}"})
+        return JSONResponse(status_code=404, content={"detail": f"Not found: {exc.args[0]}"})
 
     def svc() -> EngineService:
         current = getattr(app.state, "service", None)
@@ -90,7 +94,32 @@ def create_app(service: EngineService | None = None) -> FastAPI:
 
     @app.get("/api/builds/{revision_id}/export")
     def export(revision_id: str):
-        return {"xml": svc().export_xml(revision_id)}
+        xml = svc().export_xml(revision_id)
+        return {"xml": xml}
+
+    @app.post("/api/builds/{revision_id}/inspect")
+    def inspect(revision_id: str):
+        return svc().inspect(revision_id)
+
+    @app.post("/api/builds/{revision_id}/save")
+    def save(revision_id: str):
+        return svc().save(revision_id)
+
+    @app.post("/api/builds/{revision_id}/discard")
+    def discard(revision_id: str):
+        return svc().discard(revision_id)
+
+    @app.get("/api/library")
+    def library(q: str = ""):
+        return {"builds": svc().library(q), "storage": "sqlite"}
+
+    @app.get("/api/library/{build_id}")
+    def build_detail(build_id: str):
+        return svc().history(build_id)
+
+    @app.post("/api/library/{build_id}/copies")
+    def copy_build(build_id: str, body: CopyBody):
+        return svc().copy(build_id, body.revisionId)
 
     @app.post("/api/compare")
     def compare(body: CompareBody):

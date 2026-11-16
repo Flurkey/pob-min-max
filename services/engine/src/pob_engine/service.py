@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import threading
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from pob_engine.compare import compare_calculations
@@ -38,7 +39,12 @@ class EngineService:
         paths = resolve_paths()
         process = PobProcess.start(paths)
         if store_path is None:
-            store_path = Path(tempfile.mkdtemp(prefix="pob-store-")) / "builds.db"
+            store_path = Path(tempfile.mkdtemp(prefix="pob-store-")) / "builds.sqlite"
+        try:
+            _reject_pob_save_location(store_path, paths.src, process.user_dir)
+        except EngineError:
+            process.close()
+            raise
         return cls(process, BuildStore(store_path))
 
     def close(self) -> None:
@@ -79,13 +85,16 @@ class EngineService:
                 label="import",
                 engine_revision=self.process.revision,
                 tree_version=calc.get("treeVersion"),
+                status="saved",
             )
             self.store.record_calculation(revision["id"], calc)
             self._loaded = revision["id"]
             return {
                 "revision": _public_revision(revision),
+                "build": _public_build(self.store.get_build(revision["build_id"])),
                 "info": info,
                 "calculation": public_calculation(calc),
+                "summary": _public_summary(self.process.request("summary")),
             }
 
     def calculate(self, revision_id: str) -> dict:
@@ -101,19 +110,15 @@ class EngineService:
             try:
                 equipped = self.process.request("equip_item", text=text, slot=slot)
                 exported = self.process.request("export_xml")
+                child = self._store_draft(
+                    parent,
+                    xml=exported["xml"],
+                    label="equipment",
+                    tree_version=parent.get("tree_version"),
+                )
             except EngineError:
                 self._restore(parent)
                 raise
-            xml = exported["xml"]
-            child = self.store.create(
-                name=parent["name"],
-                xml=xml,
-                label="equipment",
-                parent_id=parent["id"],
-                build_id=parent["build_id"],
-                engine_revision=self.process.revision,
-                tree_version=parent.get("tree_version"),
-            )
             self._loaded = child["id"]
             calc = self._fresh()
             child = self.store.get(child["id"])
@@ -121,10 +126,12 @@ class EngineService:
             comparison = self.compare(parent["id"], child["id"])
             return {
                 "revision": _public_revision(child),
+                "build": _public_build(self.store.get_build(parent["build_id"])),
                 "parentId": parent["id"],
                 "equipment": equipped,
                 "calculation": public_calculation(calc),
                 "comparison": comparison,
+                "summary": _public_summary(self.process.request("summary")),
             }
 
     def allocate(self, revision_id: str, node_id: int | None = None) -> dict:
@@ -134,29 +141,137 @@ class EngineService:
                 params = {} if node_id is None else {"nodeId": node_id}
                 allocated = self.process.request("allocate_node", **params)
                 exported = self.process.request("export_xml")
+                child = self._store_draft(
+                    parent,
+                    xml=exported["xml"],
+                    label="passive",
+                    tree_version=parent.get("tree_version"),
+                )
             except EngineError:
                 self._restore(parent)
                 raise
-            child = self.store.create(
-                name=parent["name"],
-                xml=exported["xml"],
-                label="passive",
-                parent_id=parent["id"],
-                build_id=parent["build_id"],
-                engine_revision=self.process.revision,
-                tree_version=parent.get("tree_version"),
-            )
             self._loaded = child["id"]
             calc = self._fresh()
             self.store.record_calculation(child["id"], calc)
             comparison = self.compare(parent["id"], child["id"])
             return {
                 "revision": _public_revision(child),
+                "build": _public_build(self.store.get_build(parent["build_id"])),
                 "parentId": parent["id"],
                 "passive": allocated,
                 "calculation": public_calculation(calc),
                 "comparison": comparison,
+                "summary": _public_summary(self.process.request("summary")),
             }
+
+    def copy(self, build_id: str, revision_id: str | None = None) -> dict:
+        """Working copy of a stored revision. The saved head does not move."""
+        with self._lock:
+            build = self.store.get_build(build_id)
+            source_id = revision_id or build.get("saved_revision_id")
+            if not source_id:
+                raise EngineError("This build has no stored revision to copy.")
+            source = self.store.get(source_id)
+            if source["build_id"] != build_id:
+                raise EngineError("That revision belongs to a different build.")
+            child = self.store.create(
+                name=source["name"],
+                xml=source["xml"],
+                label="copy",
+                parent_id=source["id"],
+                build_id=source["build_id"],
+                engine_revision=source.get("engine_revision") or self.process.revision,
+                tree_version=source.get("tree_version"),
+                status="draft",
+            )
+            return {
+                "revision": _public_revision(child),
+                "parentId": source["id"],
+                "build": _public_build(self.store.get_build(build_id)),
+            }
+
+    def save(self, revision_id: str) -> dict:
+        """Store a new saved revision. Earlier revision rows are left as they were."""
+        with self._lock:
+            source = self._load(revision_id)
+            build = self.store.get_build(source["build_id"])
+            if build.get("saved_revision_id") == source["id"]:
+                raise EngineError("This revision is already the stored build.")
+            exported = self.process.request("export_xml")
+            xml = exported["xml"]
+            require_pob_xml(xml)
+            saved = self.store.create(
+                name=source["name"],
+                xml=xml,
+                label="save",
+                parent_id=source["id"],
+                build_id=source["build_id"],
+                engine_revision=self.process.revision,
+                tree_version=source.get("tree_version"),
+                status="saved",
+            )
+            self._loaded = None
+            stored = self.store.get(saved["id"])
+            self._restore(stored)
+            calc = self._fresh()
+            self.store.record_calculation(stored["id"], calc)
+            return {
+                "revision": _public_revision(self.store.get(stored["id"])),
+                "build": _public_build(self.store.get_build(source["build_id"])),
+                "savedFromId": source["id"],
+                "calculation": public_calculation(calc),
+                "summary": _public_summary(self.process.request("summary")),
+            }
+
+    def discard(self, revision_id: str) -> dict:
+        """Delete one leaf working copy. Saved revisions stay."""
+        with self._lock:
+            try:
+                row = self.store.delete_draft(revision_id)
+            except ValueError as exc:
+                raise EngineError(str(exc)) from exc
+            if self._loaded == revision_id:
+                self._loaded = None
+            return {
+                "discardedId": revision_id,
+                "build": _public_build(self.store.get_build(row["build_id"])),
+            }
+
+    def inspect(self, revision_id: str) -> dict:
+        with self._lock:
+            row = self._load(revision_id)
+            calc = self._fresh()
+            self.store.record_calculation(revision_id, calc)
+            summary = self.process.request("summary")
+            build = self.store.get_build(row["build_id"])
+            return {
+                "revision": _public_revision(row),
+                "build": _public_build(build),
+                "saved": row["id"] == build.get("saved_revision_id"),
+                "calculation": public_calculation(calc),
+                "summary": _public_summary(summary),
+            }
+
+    def library(self, query: str = "") -> list[dict]:
+        return [_public_build(row) for row in self.store.list_builds(query)]
+
+    def history(self, build_id: str) -> dict:
+        build = self.store.get_build(build_id)
+        revisions = [_public_revision(row) for row in self.store.list_revisions(build_id)]
+        return {"build": _public_build(build), "revisions": revisions}
+
+    def _store_draft(self, parent: dict, *, xml: str, label: str, tree_version: str | None) -> dict:
+        require_pob_xml(xml)
+        return self.store.create(
+            name=parent["name"],
+            xml=xml,
+            label=label,
+            parent_id=parent["id"],
+            build_id=parent["build_id"],
+            engine_revision=self.process.revision,
+            tree_version=tree_version,
+            status="draft",
+        )
 
     def compare(self, left_id: str, right_id: str) -> dict:
         with self._lock:
@@ -183,7 +298,66 @@ def _public_revision(row: dict) -> dict:
         "parentId": row["parent_id"],
         "name": row["name"],
         "label": row["label"],
+        "status": row.get("status") or "saved",
         "createdAt": row["created_at"],
         "engineRevision": row["engine_revision"],
         "treeVersion": row["tree_version"],
     }
+
+
+def _public_build(row: dict) -> dict:
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "savedRevisionId": row.get("saved_revision_id"),
+        "createdAt": row["created_at"],
+        "updatedAt": row["updated_at"],
+        "savedLabel": row.get("saved_label"),
+        "treeVersion": row.get("tree_version"),
+        "engineRevision": row.get("engine_revision"),
+    }
+
+
+def _public_summary(summary: dict) -> dict:
+    equipped = summary.get("equipped") or []
+    items = []
+    for item in equipped:
+        if not isinstance(item, dict):
+            continue
+        items.append(
+            {
+                "slot": item.get("slot"),
+                "name": item.get("name"),
+                "baseName": item.get("baseName"),
+            }
+        )
+    return {
+        "source": "pob-engine",
+        "className": summary.get("className"),
+        "ascendClassName": summary.get("ascendClassName"),
+        "level": summary.get("level"),
+        "treeVersion": summary.get("buildTreeVersion"),
+        "treeDisplay": summary.get("buildTreeDisplay"),
+        "allocatedPoints": summary.get("allocatedPoints"),
+        "equipped": items,
+    }
+
+
+def require_pob_xml(xml: str) -> None:
+    try:
+        root = ET.fromstring(xml)
+    except ET.ParseError as exc:
+        raise EngineError(f"Export is not valid XML: {exc}") from exc
+    if root.tag != "PathOfBuilding":
+        raise EngineError("Export root is not PathOfBuilding.")
+
+
+def _reject_pob_save_location(store_path: Path, pob_src: Path, user_dir: Path) -> None:
+    resolved = store_path.resolve()
+    forbidden = [pob_src.resolve(), user_dir.resolve()]
+    for root in forbidden:
+        if resolved == root or root in resolved.parents:
+            raise EngineError(
+                "The build library must be a local SQLite file, not a Path of Building save directory."
+            )
+
