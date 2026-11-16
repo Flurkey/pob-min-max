@@ -4,7 +4,7 @@ This file is for coding agents working in this repository.
 
 ## Current phase
 
-Phase 5 search, on top of the Phase 4 tool layer. The optimiser copies a library revision and ranks engine calculations. It does not call a model. Do not start patch-note ingestion, the trade client, build discovery, or a live model call. Do not change the pinned Path of Building checkout. The upfront cost round in `CalcOffence.lua` stays. Do not commit API keys.
+Phase 6 discovery, on top of the Phase 3 knowledge import. The search reads imported unique and modifier rows and cites every step. It does not call a model and it does not calculate stats. Do not start patch-note ingestion, the trade client, or a live model call. Do not change the pinned Path of Building checkout. The upfront cost round in `CalcOffence.lua` stays. Do not commit API keys.
 
 ## Hard rules
 
@@ -26,6 +26,7 @@ Phase 5 search, on top of the Phase 4 tool layer. The optimiser copies a library
 - Knowledge tests: `services/knowledge/tests/test_phase3.py`
 - Agent tools and the fake provider: `services/agent`. Tool results must come from the engine or the imported data.
 - Deterministic search: `services/optimisation`. It calls those tools. It does not invent a stat and it does not call a model.
+- Interaction search: `services/discovery`. Chains and conflicts quote imported unique and modifier text. A citation missing from the database is an error.
 
 ## Verification
 

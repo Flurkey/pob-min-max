@@ -1,6 +1,6 @@
 # Architecture
 
-The monorepo has four runnable parts. Later phases add agents and optimisation beside them. They do not replace the engine.
+The monorepo has separate runnable parts. Later phases sit beside the engine. They do not replace it.
 
 ```text
 apps/web  --->  services/engine  --->  engine/adapter.lua  --->  Path of Building src/
@@ -14,6 +14,9 @@ services/agent  --->  engine service and knowledge store
 
 services/optimisation  --->  agent tools
                        copies, scores, and caches engine calculations
+
+services/discovery  --->  knowledge store
+                      chains and conflicts from imported unique and modifier text
 ```
 
 ## Web
@@ -83,6 +86,14 @@ The web app does not query this database yet. The agent tools do.
 
 The web console is still the library, inspector, history, and comparison. It is not the Optimisation Lab.
 
+## Discovery
+
+`services/discovery` reads the knowledge database. It does not calculate stats and it does not call a model.
+
+A chain is two cited lines that share a phrase copied from the import. The first line grants a skill or adds a stat. The second line names that skill, or says the stat's increases also apply, or scales for every point of it or per it. A conflict cites a shared modifier `group` (the field Path of Building uses to keep one mod from a group), two `Variant` or `Version` headers on one unique, a line that forbids a status and a line that requires it, or an aura-disable line and a line that requires a different aura named in that same text.
+
+A step that names an item or a modifier the import does not contain, or quotes text that row does not contain, is rejected. Minion, ally, totem, and golem stats are not treated as the character's stat.
+
 ## What is intentionally absent
 
-Trade prices, patch-note ingestion, and recommendation workflows are later work.
+Trade prices, patch-note ingestion, and recommendation workflows are later work. The discovery search does not build a character or run it through the engine.

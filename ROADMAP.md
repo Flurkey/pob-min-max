@@ -48,7 +48,9 @@ Not in this slice: the Optimisation Lab UI, trade prices, and a model choosing t
 
 ## Phase 6 — Build discovery
 
-Interaction graph, synergies, conflicts, and original builds that the engine validates.
+Status: a search over the imported unique items and modifier lines. A chain quotes two lines that share a phrase from that text. A conflict quotes a shared modifier group, Variant or Version headers, a forbidden status against a line that requires it, or an aura-disable line against a line that requires another aura named in the import. A citation that is not in the database is rejected. The search does not calculate stats and does not call a model.
+
+Not in this slice: original builds, engine validation of a discovered chain, and the Build Discovery page.
 
 ## Phase 7 — Economy and progression
 
