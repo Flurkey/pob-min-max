@@ -4,6 +4,14 @@ Local-first theorycrafting for Path of Exile 1. Character numbers come from the 
 
 This repository is the PoE Forge app. It is not a build importer and it does not copy community builds into the answer.
 
+## Phase 5
+
+The optimisation package (`services/optimisation`) searches a library build without editing the original import. It copies the revision, then tries equipment and passive candidates through the agent tools. Each kept copy is recalculated by the Path of Building engine. A disconnected passive set, or one over the tree's point budget or a caller point budget, is rejected. Results are ranked by a stated objective, such as Life. Identical builds are cached by their canonical hash, the PoB revision, and the configuration profile. A search stops at a max iteration count or when a cancel token is set.
+
+The Scion fixture is the regression case: baseline Life 60, Glorious Plate 160, and that plate plus the Life node 256. Those numbers come from the engine on this pin.
+
+The package does not call a model. API keys stay out of the repo.
+
 ## Phase 4
 
 The agent package (`services/agent`) exposes typed tools over the engine and the knowledge database: import, inspect, calculate, compare, search uniques, gems, and passive nodes, find a passive path, allocate, equip, and export.
@@ -63,6 +71,7 @@ The pinned checkout is dev `e5917f81fd64c10d9bc816c410da395ed18e57ba` (15 Nov 20
 | `services/engine` | FastAPI service and build store |
 | `services/knowledge` | Item, gem, and passive-tree import |
 | `services/agent` | Typed agent tools and the model-provider interface |
+| `services/optimisation` | Deterministic candidate search over engine calculations |
 | `engine/adapter.lua` | Stdio driver for an unmodified PoB checkout |
 | `engine/vendor/runtime` | PoB's Lua libraries (`xml`, `dkjson`, …) |
 | `fixtures/builds` | XML exported by the pinned engine |

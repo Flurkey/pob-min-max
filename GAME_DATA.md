@@ -32,7 +32,7 @@ On 15 Nov 2026 the pinned engine reported:
 - Same character with a rare Glorious Plate that has `+100 to maximum Life`: Life **160**
 - After allocating the connected "Life" notable (node **15073**, `5% increased maximum Life`) and the nodes on its path, with auto-level enabled: Life **256**
 
-Those figures are regression locks in `services/engine/tests/test_phase1.py`. They are not constants the service returns instead of calculating.
+Those figures are regression locks in `services/engine/tests/test_phase1.py` and again in the Phase 5 search. They are not constants the service returns instead of calculating.
 
 ## Knowledge import
 

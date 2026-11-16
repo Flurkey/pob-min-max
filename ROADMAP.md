@@ -42,7 +42,9 @@ Not in this slice: the orchestrator roles, research, and ranked recommendations.
 
 ## Phase 5 — Optimisation
 
-Candidate generation, deterministic search, caching by build hash plus PoB revision, multi-objective scores, and budgets. Cancel and iteration limits.
+Status: a deterministic search copies a library revision and tries equipment and passive candidates through the agent tools. Each kept copy is recalculated by the engine. Disconnected and over-budget trees are rejected. Ranking uses a weighted objective. The cache key is the canonical build hash, the PoB revision, and the configuration profile. Searches honour a max iteration count, a passive-point budget, and cancellation.
+
+Not in this slice: the Optimisation Lab UI, trade prices, and a model choosing the candidates. The Scion proof is still Glorious Plate and the Life node, calculated by the pinned engine.
 
 ## Phase 6 — Build discovery
 

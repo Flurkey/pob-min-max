@@ -31,6 +31,7 @@ export POB_UTF8_DIR=/path/to/dir/with/lua-utf8.so
 - HTTP and persistence stay in `services/engine`.
 - Item, gem, and passive-tree import stays in `services/knowledge`. Query the generated database. Do not copy data files into the repo, and do not invent a fixture item or node for a test.
 - Agent tools stay in `services/agent`. They call the engine service and the knowledge store. A mutation copies a revision first.
+- The search stays in `services/optimisation`. It calls those tools. Do not score a number that did not come from the engine, and do not call a model from that package.
 - Run `./scripts/test.sh` before opening a pull request. For UI changes, run the web app against a live engine and click the flow, not only the empty page.
 
 ## Secrets

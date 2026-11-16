@@ -4,7 +4,7 @@ This file is for coding agents working in this repository.
 
 ## Current phase
 
-Phase 4 tool layer, on top of the Phase 3 knowledge import and the Phase 2 library. Typed tools call the engine and the knowledge store. Mutations copy a revision first. Do not start patch-note ingestion, the trade client, the optimiser, or a live model call. Do not change the pinned Path of Building checkout. The upfront cost round in `CalcOffence.lua` stays. Do not commit API keys.
+Phase 5 search, on top of the Phase 4 tool layer. The optimiser copies a library revision and ranks engine calculations. It does not call a model. Do not start patch-note ingestion, the trade client, build discovery, or a live model call. Do not change the pinned Path of Building checkout. The upfront cost round in `CalcOffence.lua` stays. Do not commit API keys.
 
 ## Hard rules
 
@@ -25,6 +25,7 @@ Phase 4 tool layer, on top of the Phase 3 knowledge import and the Phase 2 libra
 - Game-data import: `services/knowledge`. It reads data files with LuaJIT. It does not start `HeadlessWrapper` and it does not vendor `src/` or `TreeData/`.
 - Knowledge tests: `services/knowledge/tests/test_phase3.py`
 - Agent tools and the fake provider: `services/agent`. Tool results must come from the engine or the imported data.
+- Deterministic search: `services/optimisation`. It calls those tools. It does not invent a stat and it does not call a model.
 
 ## Verification
 
